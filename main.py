@@ -1,7 +1,7 @@
 from flask import Flask, request
 import json
 
-from db import db_client
+from db import table
 
 from oauth2client.client import OAuth2WebServerFlow, OAuth2Credentials
 from apiclient import discovery
@@ -26,8 +26,11 @@ def oauth_callback():
         c.write(credentials.to_json())
     user_info = get_user_info(credentials)
     tokens = credentials.to_json()
-    resp = db_client.put("users", user_info['id'], user_info)
-    resp2 = db_client.put("tokens", user_info['id'], {"t":tokens})
+    user_info['tokens'] = tokens
+    user_info['user_id'] = user_info['id']
+    table.put_item(
+        Item = user_info
+    )
     return "hi";
 
 def oauth(code):
@@ -50,12 +53,67 @@ def get_calendars():
     # timeMin = request.args.get('timeMin', )
     # timeMax = request.args.get('timeMax', )
     # calendar = request.args.get('calendar', )
-    token_json = json.dumps(db_client.get('tokens', user_id).json['t'])
-
-    cred = OAuth2Credentials.from_json(json.loads(token_json))
+    token_json = table.get_item(
+        Key = {
+            'user_id': user_id
+        }
+    )
+    token_json = token_json['Item']['tokens']
+    cred = OAuth2Credentials.from_json(token_json)
     http = cred.authorize(httplib2.Http())
     service = discovery.build('calendar', 'v3', http=http)
-    return ""
+    car = service.calendarList().list().execute()
+    car = [x['id'] for x in (car['items'])]
+    return json.dumps({'calendars':car})
+
+@app.route("/free")
+def get_freetime():
+ 
+    
+    user_id = request.args.get('user_id', )
+    timeMin = request.args.get('timeMin', )
+    timeMax = request.args.get('timeMax', )
+
+    friend_list = ['108219253602729852661', '115974855826456350106']
+
+    available_friend = []
+    
+    for x in friend_list:
+        fr, _ = get_busy(x, timeMin, timeMax)
+        if fr:
+            available_friend.append(x)
+
+    return json.dumps({'available_friends':available_friend})
+
+def get_busy(user_id, timeMin, timeMax):
+    token_json = table.get_item(
+        Key = {
+            'user_id': user_id
+        }
+    )
+    token_json = token_json['Item']['tokens']
+    cred = OAuth2Credentials.from_json(token_json)
+    http = cred.authorize(httplib2.Http())
+    service = discovery.build('calendar', 'v3', http=http)
+    calendar = service.calendarList().list().execute()
+    calendar = [{'id':x['id']} for x in (calendar['items'])]
+    calendar = service.freebusy().query(body={
+        'timeMin': timeMin,
+        'timeMax': timeMax,
+        'items' : calendar,
+        'timeZone': '-05:00'
+    }
+    ).execute()
+    calendar['busy_status'] = is_free_time(calendar)   
+
+    return calendar['busy_status'], calendar 
+
+def is_free_time(freebusyCar):
+    busys = []
+    for x in freebusyCar['calendars'].values():
+        if x['busy'] != [] :
+            return False
+    return True
 
 
 # @app.route("/tokens")

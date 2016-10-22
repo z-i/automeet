@@ -1,4 +1,4 @@
-from porc import Client
+import boto3
 
-db_client = Client("7bbd01f4-e868-4f24-8866-180a887cfe35")
-
+dynamodb = boto3.resource('dynamodb')
+table = dynamodb.Table('users')
