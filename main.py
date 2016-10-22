@@ -50,12 +50,12 @@ def get_calendars():
     # timeMin = request.args.get('timeMin', )
     # timeMax = request.args.get('timeMax', )
     # calendar = request.args.get('calendar', )
-    token_json = (db_client.get('tokens', user_id).json['t'])
+    token_json = json.dumps(db_client.get('tokens', user_id).json['t'])
 
-    cred = OAuth2Credentials.from_json(token_json)
+    cred = OAuth2Credentials.from_json(json.loads(token_json))
     http = cred.authorize(httplib2.Http())
     service = discovery.build('calendar', 'v3', http=http)
-    return service.calendarList().list().execute()
+    return ""
 
 
 # @app.route("/tokens")
