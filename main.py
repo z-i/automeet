@@ -20,7 +20,7 @@ class TZ(datetime.tzinfo):
     def dst(self, dt):
         return datetime.timedelta(0)
 
-app = Flask(__name__, static_url_path='/images')
+app = Flask(__name__, static_url_path='')
 flow = OAuth2WebServerFlow(client_id='394673669484-ffcdcejgcj397gmkijpgk3hh3dc7vibu.apps.googleusercontent.com',
                            client_secret='2BOy3uYnYVVlkE7SIvm59hN1',
                            scope=['https://www.googleapis.com/auth/plus.me', 'https://www.googleapis.com/auth/calendar'],
@@ -202,14 +202,10 @@ def inde_page():
 # def send_js(path):
 #     return send_from_directory('images', path)
 
-@app.route('/images/<path:path>')
-def static_proxy(path):
-  # send_static_file will guess the correct MIME type
-  return app.send_static_file(path)
 
 # @app.route("/tokens")
 # def get_tokens():
 #     user_id = 
 #     tokens = 
 if __name__ == "__main__":
-    app.run(debug=True, port=5001)
+    app.run(debug=True, port=8080, host="0.0.0.0")

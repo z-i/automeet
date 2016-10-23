@@ -43,7 +43,7 @@ firebase.initializeApp(fire_base_config);
 		<div class="collapse navbar-collapse" id="myNavbar">
 		<ul class="nav navbar-nav navbar-right">
 			<li class="active"><a href="#myPage">Home</a></li>
-			<li><a href="/makeAppt">Make an appointment</a></li>
+			<li><a href="MakeAppointment.html">Make an appointment</a></li>
 			<li><a href="#">Appointment Status</a></li>
 			<li><a href="#">Friends</a></li>
 		</ul>
@@ -53,6 +53,7 @@ firebase.initializeApp(fire_base_config);
 	<div class = "jumbotron">
 	<h1 id= "BigHomeTitle">AutoMeet</h1>
 	<p id="SmallHomeTitle">Meeting starts here.</p>
+		<div id="firebaseui-auth-container"></div>
 		<a href="https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id=394673669484-2a05fjb41d40l0mjogdkb7je8mq4rc8a.apps.googleusercontent.com&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fplus.me+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fcalendar&redirect_uri=http%3A%2F%2Fautomeet-zkn.c9users.io%3A8080%2Foauthcb%2F&access_type=offline" class="btn btn-success" id="googlelogin" role="button">
 			<span class="glyphicon glyphicon-calendar"></span> Link to Google Calendar
 		</a>
@@ -128,6 +129,23 @@ $(document).ready(function(){
   });
 })
 </script>
+<script src="assets/bundle.js"></script>
+<script type="text/javascript">
+      // FirebaseUI config.
+      var uiConfig = {
+        'signInSuccessUrl': '/',
+        'signInOptions': [
+          // Leave the lines as is for the providers you want to offer your users.
+          firebase.auth.GoogleAuthProvider.PROVIDER_ID
+        ]
+        // Terms of service url.
+        //'tosUrl': '<your-tos-url>',
+      };
 
+      // Initialize the FirebaseUI Widget using Firebase.
+      var ui = new firebaseui.auth.AuthUI(firebase.auth());
+      // The start method will wait until the DOM is loaded.
+      ui.start('#firebaseui-auth-container', uiConfig);
+    </script>
 </body>
 </html>

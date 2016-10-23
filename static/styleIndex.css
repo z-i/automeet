@@ -1,0 +1,105 @@
+
+.jumbotron{
+	margin-top: 70px !important;
+	margin-bottom: 0px !important;
+	text-align: center;
+	color:white !important;
+	background-image: url("images/HomeBackground.jpg"); 
+	background-size: 100%;
+	background-repeat: no-repeat;
+}
+
+p{
+	font-family: "Segoe UI Light","Segoe WPC","Segoe UI",
+              Helvetica, Arial, "Arial Unicode MS", Sans-Serif;
+              font-weight: 100;
+	font-size: 20px;
+}
+
+#secondheading{
+	text-align: center;
+}
+
+@media (min-width: 600px) {
+  .jumbotron {
+  	padding: 12% !important;
+  	margin-bottom: 3% !important; 
+  }
+  #logos{
+  	width:300px;
+  }
+
+#BigHomeTitle{
+ 	font-size: 90px;
+ }
+
+ #SmallHomeTitle{
+ 	font-size: 30px;
+ }
+
+#fblogin,#googlelogin{
+	font-size: 20px;
+	margin-top: 20px;
+	margin-left: 20px;
+	margin-right:20px;
+	color: white;
+	font-family: "Segoe UI Light","Segoe WPC","Segoe UI",
+              Helvetica, Arial, "Arial Unicode MS", Sans-Serif;
+              font-weight: 100;
+}
+
+#paragraph{
+	padding-top: 10px;
+}
+
+}
+
+@media (min-width: 1000px) {
+
+#secondheading{
+	text-align: right;
+}
+
+	}
+
+@media (min-width: 1000px) {
+	#logos{
+		width: 350px;
+	}
+	#secondheading{
+	margin-right: 60px;
+	}
+	}
+
+.smalltoken{
+	margin-left: 5px;
+	margin-right: 5px;
+	font-size: 100px;
+}
+
+.bigtoken{
+	font-size: 150px;
+	color:#005ce6;
+	margin: 10px;
+}
+
+
+.group1{
+	padding: 20px;
+}
+
+footer{
+	margin: 50px;
+}
+
+footer .glyphicon {
+    font-size: 20px;
+    margin: 20px;
+    color: black;
+}
+
+#credits{
+	margin-top: 20px;
+	font-size: 16px;
+}
+
