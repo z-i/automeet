@@ -31,19 +31,17 @@ class DecimalEncoder(json.JSONEncoder):
 
 @app.route("/friends")
 def list_friends():
-    user_id = request.args.get('user_id',)
-    friends = friend_table.get_item(
-        Key = {
-            'user_id': user_id
-        }
-    )
-    return json.dumps(friends['Item'],indent=4, cls=DecimalEncoder)
+    return json.dumps(get_friend(),indent=4, cls=DecimalEncoder)
 
 # @app.route("/friend/add")
 # def add_friend():
 #     email = request.args.get('email',)
 #     return
 
+def get_friend():
+     resp = table.scan(ProjectionExpression= "user_id")
+     friends = [x['user_id'] for x in resp['Items']]
+     return friends
 
 @app.route("/info")
 def get_info():
@@ -111,7 +109,7 @@ def get_freetime():
     timeMin = request.args.get('timeMin', )
     timeMax = request.args.get('timeMax', )
 
-    friend_list = ['108219253602729852661', '115974855826456350106']
+    friend_list = get_friend()
 
     available_friend = []
     
