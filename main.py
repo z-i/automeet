@@ -1,7 +1,8 @@
 from flask import Flask, request
 import json
+import decimal
 
-from db import table
+from db import table, friend_table
 
 from oauth2client.client import OAuth2WebServerFlow, OAuth2Credentials
 from apiclient import discovery
@@ -17,6 +18,42 @@ flow = OAuth2WebServerFlow(client_id='394673669484-ffcdcejgcj397gmkijpgk3hh3dc7v
                            scope=['https://www.googleapis.com/auth/plus.me', 'https://www.googleapis.com/auth/calendar'],
                            redirect_uri='http://localhost:5001/oauthcb/')
 
+# Helper class to convert a DynamoDB item to JSON.
+class DecimalEncoder(json.JSONEncoder):
+    def default(self, o):
+        if isinstance(o, decimal.Decimal):
+            if o % 1 > 0:
+                return float(o)
+            else:
+                return int(o)
+        return super(DecimalEncoder, self).default(o)
+
+
+@app.route("/friends")
+def list_friends():
+    user_id = request.args.get('user_id',)
+    friends = friend_table.get_item(
+        Key = {
+            'user_id': user_id
+        }
+    )
+    return json.dumps(friends['Item'],indent=4, cls=DecimalEncoder)
+
+# @app.route("/friend/add")
+# def add_friend():
+#     email = request.args.get('email',)
+#     return
+
+
+@app.route("/info")
+def get_info():
+    user_id = request.args.get('user_id',)
+    info = table.get_item(
+        Key = {
+            'user_id': user_id
+        }
+    )
+    return json.dumps(info['Item'],indent=4, cls=DecimalEncoder)
 
 @app.route("/oauthcb/")
 def oauth_callback():
