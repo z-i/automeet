@@ -1,6 +1,8 @@
-from flask import Flask, request
+from flask import Flask, request, render_template, send_from_directory
 import json
 import decimal
+import datetime
+
 
 from db import table, friend_table
 
@@ -12,7 +14,13 @@ import time
 
 import httplib2
 
-app = Flask(__name__)
+class TZ(datetime.tzinfo):
+    def utcoffset(self, dt):
+        return datetime.timedelta(hours=-5)
+    def dst(self, dt):
+        return datetime.timedelta(0)
+
+app = Flask(__name__, static_url_path='/images')
 flow = OAuth2WebServerFlow(client_id='394673669484-ffcdcejgcj397gmkijpgk3hh3dc7vibu.apps.googleusercontent.com',
                            client_secret='2BOy3uYnYVVlkE7SIvm59hN1',
                            scope=['https://www.googleapis.com/auth/plus.me', 'https://www.googleapis.com/auth/calendar'],
@@ -52,6 +60,14 @@ def get_info():
         }
     )
     return json.dumps(info['Item'],indent=4, cls=DecimalEncoder)
+
+def get_name(user_id):
+    info = table.get_item(
+        Key = {
+            'user_id': user_id
+        }
+    )
+    return info['Item']['displayName']
 
 @app.route("/oauthcb/")
 def oauth_callback():
@@ -120,6 +136,17 @@ def get_freetime():
 
     return json.dumps({'available_friends':available_friend})
 
+
+def get_free_time(timeMin, timeMax):
+    friend_list = get_friend()
+    available_friend = []
+    
+    for x in friend_list:
+        fr, _ = get_busy(x, timeMin, timeMax)
+        if fr:
+            available_friend.append(x)
+    return available_friend
+
 def get_busy(user_id, timeMin, timeMax):
     token_json = table.get_item(
         Key = {
@@ -150,6 +177,35 @@ def is_free_time(freebusyCar):
             return False
     return True
 
+@app.route("/makeAppt")
+def make_appt():
+    times = []
+    for x in range(5):
+        timeMin = datetime.datetime.combine(datetime.date.today(), datetime.time(hour = x + datetime.datetime.now(tz=TZ()).hour)).isoformat() + "-05:00"
+        timeMax = datetime.datetime.combine(datetime.date.today(), datetime.time(hour = x + 1 + datetime.datetime.now(tz=TZ()).hour)).isoformat() + "-05:00"
+        aval_friends = get_free_time(timeMin, timeMax)
+        names = []
+        for f in aval_friends:
+            names.append(get_name(f))
+        time = {
+            "timeMin": timeMin,
+            "frees": names,
+        }
+        times.append(time)
+    return render_template('makeAppointment.html', times = times)
+
+@app.route('/')
+def inde_page():
+    return render_template('index.html')
+
+# @app.route('/images/<path:path>')
+# def send_js(path):
+#     return send_from_directory('images', path)
+
+@app.route('/images/<path:path>')
+def static_proxy(path):
+  # send_static_file will guess the correct MIME type
+  return app.send_static_file(path)
 
 # @app.route("/tokens")
 # def get_tokens():

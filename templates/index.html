@@ -1,0 +1,151 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8">
+
+<title>AutoMeet</title>
+<meta name="description" content="AutoMeet">
+<script src="https://www.gstatic.com/firebasejs/ui/live/0.5/firebase-ui-auth.js"></script>
+<link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/live/0.5/firebase-ui-auth.css" />
+<script src="https://www.gstatic.com/firebasejs/3.5.0/firebase.js"></script>
+	<link rel="stylesheet" type="text/css" href="styleIndex.css">
+  			<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+ 				 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+ 				 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+
+<script type="text/javascript">
+var fire_base_config = {
+    apiKey: "AIzaSyBjSkX4WlG5YnmseSSqk4ta1gDxr1moOWc",
+    authDomain: "automeet-147103.firebaseapp.com",
+    databaseURL: "https://automeet-147103.firebaseio.com",
+    storageBucket: "automeet-147103.appspot.com",
+    messagingSenderId: "394673669484"
+  };
+
+firebase.initializeApp(fire_base_config);
+</script>
+</head>
+
+<body id="myPage">
+<nav class="navbar navbar-default navbar-fixed-top">
+	<div class="container">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+        	<span class="icon-bar"></span>
+        	<span class="icon-bar"></span>
+       		<span class="icon-bar"></span> 
+      </button>
+			<a class="navbar-brand" href="#myPage">AutoMeet</a>
+		</div>
+
+		<div class="collapse navbar-collapse" id="myNavbar">
+		<ul class="nav navbar-nav navbar-right">
+			<li class="active"><a href="#myPage">Home</a></li>
+			<li><a href="MakeAppointment.html">Make an appointment</a></li>
+			<li><a href="#">Appointment Status</a></li>
+			<li><a href="#">Friends</a></li>
+		</ul>
+	</div>
+	</nav>
+<div class = "container group1">
+	<div class = "jumbotron">
+	<h1 id= "BigHomeTitle">AutoMeet</h1>
+	<p id="SmallHomeTitle">Meeting starts here.</p>
+		<div id="firebaseui-auth-container"></div>
+		<a href="https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id=394673669484-2a05fjb41d40l0mjogdkb7je8mq4rc8a.apps.googleusercontent.com&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fplus.me+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fcalendar&redirect_uri=http%3A%2F%2Fautomeet-zkn.c9users.io%3A8080%2Foauthcb%2F&access_type=offline" class="btn btn-success" id="googlelogin" role="button">
+			<span class="glyphicon glyphicon-calendar"></span> Link to Google Calendar
+		</a>
+	</div>
+</div>
+
+<div class = "container group1">
+	<div class = "row">
+		<div class="col-sm-7">
+			<h1>What is AutoMeet?</h1>
+				<p id="paragraph">Tired of constantly messaging your friends for meetings or hangouts? We are here to help! <br><br>AutoMeet allows you to use your Google Calendar and Facebook contact list to find mutual times for you and your friends to meet, for whatever reason.</p>
+		</div>
+		<div class="col-sm-5 text-center">
+				<img class="img-reponsive" id="logos" src="images/googleandfacebooklogos.png" width="300px">
+		</div>
+	</div>
+</div>
+
+<div class="container group1">
+	<div class="row">
+		<div class="col-sm-5 text-center" style="margin-top:30px">
+			<span class="glyphicon glyphicon-user smalltoken"></span>
+			<span class="glyphicon glyphicon-calendar smalltoken"></span>
+			<span class="glyphicon glyphicon-cloud-download bigtoken"></span>
+		</div>
+		<div class="col-sm-7">
+			<h1 id="secondheading">One Step Sign-in</h1>
+			<p id="paragraph">
+				Tired of all the complicated registrations and the spam emails? No worries. We've got you covered. 
+				<br><br>
+				Sign in with only one click. With your Facebook contact list and your Google calendar, everything is clear, straightforward and eays.
+			</p>
+		</div>
+	</div>
+</div>
+
+<footer class="container-fluid text-center">
+  <a href="#myPage" title="To Top">
+    <span class="glyphicon glyphicon-chevron-up"></span>
+  </a>
+  <h3>Made By the Boston University AutoMeet Team (2016):
+  </h>
+  <p id="credits">
+  	Duy Nguyen, Kevin Liang, Jack Jin, Lazi Zhao, Yubo Ruan, Edward Luo
+
+  </p> 
+</footer>
+
+<script>
+$(document).ready(function(){
+  // Add smooth scrolling to all links in navbar + footer link
+  $(".navbar a, footer a[href='#myPage']").on('click', function(event) {
+
+   // Make sure this.hash has a value before overriding default behavior
+  if (this.hash !== "") {
+
+    // Prevent default anchor click behavior
+    event.preventDefault();
+
+    // Store hash
+    var hash = this.hash;
+
+    // Using jQuery's animate() method to add smooth page scroll
+    // The optional number (900) specifies the number of milliseconds it takes to scroll to the specified area
+    $('html, body').animate({
+      scrollTop: $(hash).offset().top
+    }, 900, function(){
+
+      // Add hash (#) to URL when done scrolling (default click behavior)
+      window.location.hash = hash;
+      });
+    } // End if
+  });
+})
+</script>
+<script src="assets/bundle.js"></script>
+<script type="text/javascript">
+      // FirebaseUI config.
+      var uiConfig = {
+        'signInSuccessUrl': '/',
+        'signInOptions': [
+          // Leave the lines as is for the providers you want to offer your users.
+          firebase.auth.GoogleAuthProvider.PROVIDER_ID
+        ]
+        // Terms of service url.
+        //'tosUrl': '<your-tos-url>',
+      };
+
+      // Initialize the FirebaseUI Widget using Firebase.
+      var ui = new firebaseui.auth.AuthUI(firebase.auth());
+      // The start method will wait until the DOM is loaded.
+      ui.start('#firebaseui-auth-container', uiConfig);
+    </script>
+</body>
+</html>
